@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import streamlit.components.v1 as components
 
 # 페이지 기본 설정
 st.set_page_config(page_title="더울림 마더텅 어휘테스트", page_icon="📝", layout="centered")
@@ -47,26 +48,20 @@ def speak_text(text):
     </script>
     """
     components.html(js_code, height=0)
-    
-# 2. 데이터 불러오기 및 날짜 선택
+
+# 데이터 불러오기 및 날짜 선택
 if sheet_url:
     try:
         df = pd.read_csv(sheet_url)
         
-        # '날짜' 컬럼이 있는 경우 날짜 목록 추출
         if '날짜' in df.columns:
             date_list = sorted(df['날짜'].dropna().astype(str).unique().tolist(), reverse=True)
-            
-            # 날짜 선택 드롭다운
             selected_date = st.selectbox("📅 테스트할 날짜를 선택하세요:", date_list)
-            
-            # 선택한 날짜의 데이터만 필터링
             filtered_df = df[df['날짜'].astype(str) == selected_date]
         else:
             st.warning("⚠️ 구글 시트에 '날짜' 열이 없습니다. 전체 단어로 진행합니다.")
             filtered_df = df
 
-        # 테스트 시작 버튼
         if not st.session_state.test_started:
             st.write(f"선택된 단어 수: **{len(filtered_df)}개**")
             if st.button("🚀 테스트 시작하기", use_container_width=True):
@@ -84,17 +79,16 @@ if sheet_url:
 else:
     st.info("👈 왼쪽 사이드바에 구글 시트 '웹에 게시' CSV URL을 입력해 주세요.")
 
-# 3. 테스트 진행 화면
+# 테스트 진행 화면
 if st.session_state.test_started and st.session_state.quiz_data:
     total = len(st.session_state.quiz_data)
     idx = st.session_state.current_idx
 
-    # 모든 문제를 풀었을 때 (결과 화면)
+    # 테스트 종료
     if idx >= total:
         st.balloons()
         st.success(f"🎉 테스트가 종료되었습니다! 점수: {st.session_state.score} / {total}점")
         
-        # 오답 노트 출력
         wrong_list = [ans for ans in st.session_state.user_answers if not ans['is_correct']]
         if wrong_list:
             st.subheader("❌ 오답 노트")
@@ -107,7 +101,7 @@ if st.session_state.test_started and st.session_state.quiz_data:
             st.session_state.test_started = False
             st.rerun()
 
-    # 문제 진행 중
+    # 문제 진행
     else:
         current_quiz = st.session_state.quiz_data[idx]
         meaning = current_quiz['뜻']
@@ -118,14 +112,13 @@ if st.session_state.test_started and st.session_state.quiz_data:
         
         st.markdown(f"### **뜻:** {meaning}")
 
-        # 음성 재생 버튼
+        # 수동으로 다시 듣는 버튼 제공 (클릭 시 소리 보장)
         if st.button("🔊 뜻 다시 듣기"):
-            speak_js(meaning)
+            speak_text(meaning)
 
-        # 자동으로 첫 재생
-        speak_js(meaning)
+        # 문제 진입 시 음성 재생
+        speak_text(meaning)
 
-        # 답 입력폼
         with st.form(key=f"quiz_form_{idx}"):
             user_input = st.text_input("단어를 입력하세요:", key=f"input_{idx}").strip()
             submit_button = st.form_submit_button(label="정답 제출 ➡️")
@@ -141,6 +134,9 @@ if st.session_state.test_started and st.session_state.quiz_data:
                     'user': user_input,
                     'is_correct': is_correct
                 })
+                
+                st.session_state.current_idx += 1
+                st.rerun()
                 
                 st.session_state.current_idx += 1
                 st.rerun()

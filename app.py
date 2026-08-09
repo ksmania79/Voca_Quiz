@@ -13,11 +13,11 @@ DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsalj
 
 st.sidebar.header("⚙️ 설정")
 sheet_url = st.sidebar.text_input(
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsaIjFDD77-SxjlNnp01CvW0ZyEKnDBrqEM830P7q5iwsXwvumTXHgM4-a-csHXtIxqu9oZRn/pub?output=csv",
+    "구글 시트 '웹에 게시' CSV URL",
     value=DEFAULT_SHEET_URL
 )
 
-# 세션 상태 초기화
+# 세션 상태 초기화 (문제 상태 유지용)
 if "quiz_data" not in st.session_state:
     st.session_state.quiz_data = []
 if "current_idx" not in st.session_state:

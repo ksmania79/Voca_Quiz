@@ -29,17 +29,25 @@ if "user_answers" not in st.session_state:
 if "test_started" not in st.session_state:
     st.session_state.test_started = False
 
-# 웹 브라우저 음성 재생(TTS) JavaScript 함수
-def speak_js(text):
+# 개선된 브라우저 음성 재생(TTS) 함수
+def speak_text(text):
+    # 특수문자 및 따옴표 에러 방지
+    clean_text = text.replace("'", "").replace('"', '').replace("\n", " ")
     js_code = f"""
     <script>
-        var msg = new SpeechSynthesisUtterance('{text}');
-        msg.lang = 'ko-KR';
-        window.speechSynthesis.speak(msg);
+        function speak() {{
+            window.speechSynthesis.cancel(); // 이전 음성 중단
+            var msg = new SpeechSynthesisUtterance('{clean_text}');
+            msg.lang = 'ko-KR';
+            msg.rate = 0.9; // 속도 조절
+            window.speechSynthesis.speak(msg);
+        }}
+        // 브라우저 로딩 완료 후 실행
+        setTimeout(speak, 200);
     </script>
     """
-    st.components.v1.html(js_code, height=0)
-
+    components.html(js_code, height=0)
+    
 # 2. 데이터 불러오기 및 날짜 선택
 if sheet_url:
     try:

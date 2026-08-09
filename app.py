@@ -9,11 +9,11 @@ st.title("📝 더울림 마더텅 어휘테스트")
 st.write("날짜별 단어를 선택하여 테스트를 진행합니다.")
 
 # 1. 구글 시트 URL 기본값 고정
-DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsaljFDD77-SxjlNnp01CvW0ZyEKnDBrqEM830P7q5iwsXwvumTXHgM4-a-csHXtlxqu9oZrN/pub?output=csv"
+DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsaIjFDD77-SxjlNnp01CvW0ZyEKnDBrqEM830P7q5iwsXwvumTXHgM4-a-csHXtIxqu9oZRn/pub?gid=0&single=true&output=csv"
 
 st.sidebar.header("⚙️ 설정")
 sheet_url = st.sidebar.text_input(
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsaIjFDD77-SxjlNnp01CvW0ZyEKnDBrqEM830P7q5iwsXwvumTXHgM4-a-csHXtIxqu9oZRn/pub?output=csv",
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTm5sTsaIjFDD77-SxjlNnp01CvW0ZyEKnDBrqEM830P7q5iwsXwvumTXHgM4-a-csHXtIxqu9oZRn/pub?gid=0&single=true&output=csv",
     value=DEFAULT_SHEET_URL
 )
 
